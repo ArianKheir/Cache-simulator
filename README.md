@@ -1,7 +1,7 @@
 # ARMv7 Cache Simulator
 
 ## Overview
-This project is a cache simulator written in ARMv7 assembly, designed to run on the [cpulator ARMv7 emulator](https://cpulator.01xz.net/?sys=armv7). It simulates the behavior of a two-level cache hierarchy (L1 and L2) for an array of memory block accesses, tracking cache hits and misses. The simulator supports configurable cache sizes, replacement policies, and cache mapping modes (Direct Mapped, 2-Way Set Associative, and Fully Associative).
+This project is a cache simulator written in ARMv7 assembly, designed to run on the [cpulator ARMv7 emulator](https://cpulator.01xz.net/?sys=arm). It simulates the behavior of a two-level cache hierarchy (L1 and L2) for an array of memory block accesses, tracking cache hits and misses. The simulator supports configurable cache sizes, replacement policies, and cache mapping modes (Direct Mapped, 2-Way Set Associative, and Fully Associative).
 
 ## Features
 - **Simulates L1 and L2 caches** with independent size and policy configuration
@@ -107,14 +107,14 @@ You can modify the following parameters in the `.data` section:
 ## How to Run (on cpulator)
 
 ### For DMC and 2WSA:
-1. Go to [cpulator ARMv7 emulator](https://cpulator.01xz.net/?sys=armv7)
+1. Go to [cpulator ARMv7 emulator](https://cpulator.01xz.net/?sys=arm)
 2. Paste the contents of `DMC-2WSA.s` into the editor
 3. Modify the `.data` section as needed for your experiment
 4. Click **Assemble & Run**
 5. Use the memory viewer to inspect `hitmissL1`, `hitmissL2`, `cacheL1`, and `cacheL2` after execution
 
 ### For Fully Associative:
-1. Go to [cpulator ARMv7 emulator](https://cpulator.01xz.net/?sys=armv7)
+1. Go to [cpulator ARMv7 emulator](https://cpulator.01xz.net/?sys=arm)
 2. Paste the contents of `fullyassociative.s` into the editor
 3. Modify the `.data` section as needed for your experiment
 4. Click **Assemble & Run**
@@ -169,5 +169,5 @@ This project is for educational purposes. Please credit the author if you use or
 
 ## Acknowledgments
 - ARMv7 architecture documentation
-- [cpulator ARMv7 emulator](https://cpulator.01xz.net/?sys=armv7)
+- [cpulator ARMv7 emulator](https://cpulator.01xz.net/?sys=arm)
 - Assembly programming resources and tutorials 
