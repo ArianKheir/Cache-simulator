@@ -12,13 +12,13 @@ This project is a cache simulator written in ARMv7 assembly, designed to run on 
 - **Designed for educational use and easy experimentation**
 
 ## Project Structure
-- `untitled (29).s`: Main ARMv7 assembly source file for DMC and 2WSA modes
+- `DMC-2WSA.s`: Main ARMv7 assembly source file for DMC and 2WSA modes
 - `fullyassociative.s`: ARMv7 assembly source file for Fully Associative Cache mode
 - **Data Section**:
   - `inputarray`: Array of memory block numbers to access (modifiable)
   - `hitmissL1`, `hitmissL2`: Arrays to record hit/miss results for each access
   - `cacheL1`, `cacheL2`: Arrays representing the L1 and L2 cache contents
-  - `mode`: 1 byte, 0 for DMC, 1 for 2WSA (in untitled (29).s)
+  - `mode`: 1 byte, 0 for DMC, 1 for 2WSA (in DMC-2WSA.s)
   - `countL1`, `countL2`: Arrays for usage/frequency counters (for LFU/MFU)
   - `rand_seed`, `rand_a`, `rand_c`: For random replacement policy
 - **Text Section**:
@@ -79,7 +79,7 @@ Each policy can be set independently for L1 and L2 (see configuration below):
 
 ## Configuration
 
-### For DMC and 2WSA (`untitled (29).s`)
+### For DMC and 2WSA (`DMC-2WSA.s`)
 You can modify the following parameters in the `.data` section:
 - `inputarray`: Change the sequence of memory block accesses
 - `mode`: Set to 0 for DMC, 1 for 2WSA
@@ -108,7 +108,7 @@ You can modify the following parameters in the `.data` section:
 
 ### For DMC and 2WSA:
 1. Go to [cpulator ARMv7 emulator](https://cpulator.01xz.net/?sys=armv7)
-2. Paste the contents of `untitled (29).s` into the editor
+2. Paste the contents of `DMC-2WSA.s` into the editor
 3. Modify the `.data` section as needed for your experiment
 4. Click **Assemble & Run**
 5. Use the memory viewer to inspect `hitmissL1`, `hitmissL2`, `cacheL1`, and `cacheL2` after execution
@@ -133,7 +133,7 @@ The simulator will process each access, update caches, and record hits/misses in
 
 ## Code Structure (Key Functions)
 
-### DMC and 2WSA (`untitled (29).s`)
+### DMC and 2WSA (`DMC-2WSA.s`)
 - **_start**: Main loop, handles access, mode, and policy selection
 - **replacementL1/replacementL2**: Handles block replacement per policy
 - **missL1/hitL1/missL2/hitL2**: Update hit/miss arrays and counters
