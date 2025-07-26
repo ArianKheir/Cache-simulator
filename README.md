@@ -1,41 +1,24 @@
 # ARMv7 Cache Simulator
 
 ## Overview
-<<<<<<< Updated upstream
-This project is a cache simulator written in ARMv7 assembly, designed to run on the [cpulator ARMv7 emulator](https://cpulator.01xz.net/?sys=armv7). It simulates the behavior of a two-level cache hierarchy (L1 and L2) for an array of memory block accesses, tracking cache hits and misses. The simulator supports configurable cache sizes, replacement policies, and cache mapping modes (Direct Mapped and 2-Way Set Associative).
-
-## Features
-- **Simulates L1 and L2 caches** with independent size and policy configuration
-- **Supports multiple replacement policies**: FIFO, LRU, MRU, LFU, MFU, and Random (for 2WSA)
-- **Configurable cache mapping**: Direct Mapped Cache (DMC) or 2-Way Set Associative (2WSA)
-=======
 This project is a cache simulator written in ARMv7 assembly, designed to run on the [cpulator ARMv7 emulator](https://cpulator.01xz.net/?sys=armv7). It simulates the behavior of a two-level cache hierarchy (L1 and L2) for an array of memory block accesses, tracking cache hits and misses. The simulator supports configurable cache sizes, replacement policies, and cache mapping modes (Direct Mapped, 2-Way Set Associative, and Fully Associative).
 
 ## Features
 - **Simulates L1 and L2 caches** with independent size and policy configuration
 - **Supports multiple replacement policies**: FIFO, LRU, MRU, LFU, MFU, and Random
 - **Configurable cache mapping**: Direct Mapped Cache (DMC), 2-Way Set Associative (2WSA), and Fully Associative Cache (FAC)
->>>>>>> Stashed changes
 - **Tracks and records hit/miss statistics** for both cache levels
 - **Customizable input array** of memory block numbers (0-255)
 - **Designed for educational use and easy experimentation**
 
 ## Project Structure
-<<<<<<< Updated upstream
-- `untitled (29).s`: Main ARMv7 assembly source file containing all logic, data, and configuration
-=======
 - `untitled (29).s`: Main ARMv7 assembly source file for DMC and 2WSA modes
 - `fullyassociative.s`: ARMv7 assembly source file for Fully Associative Cache mode
->>>>>>> Stashed changes
 - **Data Section**:
   - `inputarray`: Array of memory block numbers to access (modifiable)
   - `hitmissL1`, `hitmissL2`: Arrays to record hit/miss results for each access
   - `cacheL1`, `cacheL2`: Arrays representing the L1 and L2 cache contents
-<<<<<<< Updated upstream
-  - `mode`: 1 byte, 0 for DMC, 1 for 2WSA
-=======
   - `mode`: 1 byte, 0 for DMC, 1 for 2WSA (in untitled (29).s)
->>>>>>> Stashed changes
   - `countL1`, `countL2`: Arrays for usage/frequency counters (for LFU/MFU)
   - `rand_seed`, `rand_a`, `rand_c`: For random replacement policy
 - **Text Section**:
@@ -55,10 +38,7 @@ This project is a cache simulator written in ARMv7 assembly, designed to run on 
 3. **Statistics**: Results are stored in `hitmissL1` and `hitmissL2` arrays for analysis
 
 ## Cache Modes
-<<<<<<< Updated upstream
-=======
 
->>>>>>> Stashed changes
 ### Direct Mapped Cache (DMC)
 - Each memory block maps to exactly one cache line (index = block % cache size)
 - On miss, the cache line is replaced with the new block
@@ -70,12 +50,6 @@ This project is a cache simulator written in ARMv7 assembly, designed to run on 
 - On miss, replacement policy decides which way to evict
 - Reduces conflict misses compared to DMC
 
-<<<<<<< Updated upstream
-## Replacement Policies
-Each policy can be set independently for L1 and L2 (see configuration below):
-
-- **FIFO (First-In, First-Out)**: Replaces the oldest block in the set
-=======
 ### Fully Associative Cache (FAC)
 - Any memory block can be placed in any cache line
 - No mapping restrictions - maximum flexibility for block placement
@@ -91,35 +65,22 @@ Each policy can be set independently for L1 and L2 (see configuration below):
 Each policy can be set independently for L1 and L2 (see configuration below):
 
 - **FIFO (First-In, First-Out)**: Replaces the oldest block in the cache/set
->>>>>>> Stashed changes
 - **LRU (Least Recently Used)**: Replaces the block that was least recently accessed
 - **MRU (Most Recently Used)**: Replaces the block that was most recently accessed
 - **LFU (Least Frequently Used)**: Replaces the block with the lowest access count
 - **MFU (Most Frequently Used)**: Replaces the block with the highest access count
-<<<<<<< Updated upstream
-- **Random**: Randomly selects a block to replace (only in 2WSA mode)
-
-### Policy Implementation Details
-- **FIFO**: Overwrites the first available or oldest block
-- **LRU/MRU**: Uses block swapping to track recent usage (see `swapL1`/`swapL2`)
-=======
 - **Random**: Randomly selects a block to replace
 
 ### Policy Implementation Details
 - **FIFO**: Overwrites the first available or oldest block
 - **LRU/MRU**: Uses block swapping to track recent usage (see `swapL1`/`swapL2` for 2WSA, direct manipulation for FAC)
->>>>>>> Stashed changes
 - **LFU/MFU**: Uses `countL1`/`countL2` arrays to track access frequency
 - **Random**: Uses a simple linear congruential generator for pseudo-random selection
 
 ## Configuration
-<<<<<<< Updated upstream
-You can modify the following parameters in the `.data` section of `untitled (29).s`:
-=======
 
 ### For DMC and 2WSA (`untitled (29).s`)
 You can modify the following parameters in the `.data` section:
->>>>>>> Stashed changes
 - `inputarray`: Change the sequence of memory block accesses
 - `mode`: Set to 0 for DMC, 1 for 2WSA
 - `cacheL1`, `cacheL2`: Change the size by modifying `.fill` count (default 4)
@@ -129,11 +90,6 @@ You can modify the following parameters in the `.data` section:
   - 2: MRU
   - 3: LFU
   - 4: MFU
-<<<<<<< Updated upstream
-  - 5: Random (2WSA only)
-
-## How to Run (on cpulator)
-=======
   - 5: Random
 
 ### For Fully Associative (`fullyassociative.s`)
@@ -151,15 +107,12 @@ You can modify the following parameters in the `.data` section:
 ## How to Run (on cpulator)
 
 ### For DMC and 2WSA:
->>>>>>> Stashed changes
 1. Go to [cpulator ARMv7 emulator](https://cpulator.01xz.net/?sys=armv7)
 2. Paste the contents of `untitled (29).s` into the editor
 3. Modify the `.data` section as needed for your experiment
 4. Click **Assemble & Run**
 5. Use the memory viewer to inspect `hitmissL1`, `hitmissL2`, `cacheL1`, and `cacheL2` after execution
 
-<<<<<<< Updated upstream
-=======
 ### For Fully Associative:
 1. Go to [cpulator ARMv7 emulator](https://cpulator.01xz.net/?sys=armv7)
 2. Paste the contents of `fullyassociative.s` into the editor
@@ -167,17 +120,11 @@ You can modify the following parameters in the `.data` section:
 4. Click **Assemble & Run**
 5. Use the memory viewer to inspect `hitmissL1`, `hitmissL2`, `cacheL1`, and `cacheL2` after execution
 
->>>>>>> Stashed changes
 ## Example
 Suppose `inputarray` is:
 ```
 .byte 8, 5, 6, 6, 6, 6, 2, 7
 ```
-<<<<<<< Updated upstream
-With L1 and L2 both size 4, mode = 1 (2WSA), L1 policy = LRU, L2 policy = LRU, the simulator will process each access, update caches, and record hits/misses in `hitmissL1` and `hitmissL2`.
-
-## Code Structure (Key Functions)
-=======
 With L1 and L2 both size 4:
 - **DMC/2WSA**: With mode = 1 (2WSA), L1 policy = LRU, L2 policy = LRU
 - **FAC**: With L1 policy = LRU, L2 policy = LRU
@@ -187,7 +134,6 @@ The simulator will process each access, update caches, and record hits/misses in
 ## Code Structure (Key Functions)
 
 ### DMC and 2WSA (`untitled (29).s`)
->>>>>>> Stashed changes
 - **_start**: Main loop, handles access, mode, and policy selection
 - **replacementL1/replacementL2**: Handles block replacement per policy
 - **missL1/hitL1/missL2/hitL2**: Update hit/miss arrays and counters
@@ -195,12 +141,6 @@ The simulator will process each access, update caches, and record hits/misses in
 - **get_random**: Generates pseudo-random numbers for random replacement
 - **swapL1/swapL2**: Swaps blocks for LRU/MRU in 2WSA
 
-<<<<<<< Updated upstream
-## Customization & Extension
-- Change cache sizes by editing `.fill` in `cacheL1`/`cacheL2`
-- Add more policies or modify existing ones in `replacementL1`/`replacementL2`
-- Adjust input patterns for different memory access scenarios
-=======
 ### Fully Associative (`fullyassociative.s`)
 - **_start**: Main loop with sequential search through all cache lines
 - **replacementL1/replacementL2**: Handles block replacement per policy
@@ -223,7 +163,6 @@ The simulator will process each access, update caches, and record hits/misses in
 
 ## Author
 **Arian Kheirandish**
->>>>>>> Stashed changes
 
 ## License
 This project is for educational purposes. Please credit the author if you use or modify this code.
