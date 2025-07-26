@@ -22,6 +22,10 @@ rand_a: .byte 13
 .align 2
 rand_c: .byte 17
 .align 2
+hitAndmissAndhitrateL1: .byte 0, 0, 0
+.align 2
+hitAndmissAndhitrateL2: .byte 0, 0, 0
+.align 2
 .text
 .global _start
 _start:
@@ -38,7 +42,7 @@ _start:
 	MOV R7, #4 @size of L2
 	LOOP:
 		CMP R4, R3
-		BGE end
+		BGE endLOOP
 		@search in L1
 		PUSH {R0, R1}
 		LDRB R0, [R0, R4] @find the place to search in cache
@@ -139,6 +143,9 @@ _start:
 		next_LOOP:
 			ADD R4, R4, #1
 			B LOOP
+endLOOP:
+	BL compute_stats
+	B end
 end:
 	B end
 replacementL1:
@@ -524,9 +531,69 @@ swapL2:
 	STRB R1, [R9, R8]
 	POP {R0, R1, R9, R5, LR}
 	BX LR	
-	
-	
-	
-	
+compute_stats:
+    PUSH {R0-R8, LR}
+    MOV R0, #0      @ R0 = index
+    MOV R1, #0      @ R1 = L1 hits
+    MOV R2, #0      @ R2 = L1 misses
+    MOV R3, #0      @ R3 = L2 hits
+    MOV R4, #0      @ R4 = L2 misses
+    LDR R5, =hitmissL1
+    LDR R6, =hitmissL2	
+	loop_stats:
+		CMP R0, R3
+		BGE done_stats
+
+		LDRB R7, [R5, R0]
+		CMP R7, #1
+		ADDNE R2, R2, #1    @ L1 miss
+		ADDEQ R1, R1, #1    @ L1 hit
+
+		LDRB R7, [R6, R0]
+		CMP R7, #1
+		ADDNE R4, R4, #1    @ L2 miss
+		ADDEQ R3, R3, #1    @ L2 hit
+
+		ADD R0, R0, #1
+		B loop_stats	
+	done_stats:
+    @ Store L1 [hit, miss, hitrate]
+    LDR R7, =hitAndmissAndhitrateL1
+    STRB R1, [R7]       @ hits
+    STRB R2, [R7, #1]   @ misses
+    MOV R8, #100
+    MUL R8, R8, R1      @ R8 = 100 * hits
+	@ R0 = R8 / 8
+    MOV R0, R8
+    MOV R1, #8
+    BL divide_func      @R0 = hitrate
+    STRB R0, [R7, #2]
+    @ Store L2 [hit, miss, hitrate]
+    LDR R7, =hitAndmissAndhitrateL2
+    STRB R3, [R7]       @ hits
+    STRB R4, [R7, #1]   @ misses
+
+    MOV R8, #100
+    MUL R8, R8, R3		@ R8 = 100 * hits
+    MOV R0, R8
+    MOV R1, #8
+    BL divide_func		@R0 = hitrate
+    STRB R0, [R7, #2]
+
+    POP {R0-R8, LR}
+    BX LR
+divide_func:
+    PUSH {R2, R3, LR}
+    MOV R2, #0         @ R2 = quotient = 0
+	div_loop:
+		CMP R0, R1
+		BLT div_done
+		SUB R0, R0, R1
+		ADD R2, R2, #1
+		B div_loop
+	div_done:
+		MOV R0, R2         @ return quotient in R0
+		POP {R2, R3, LR}
+		BX LR
 	
 	
