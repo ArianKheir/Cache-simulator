@@ -72,7 +72,7 @@ _start:
 		BEQ hit_end_of_L2search
 		BL missL2
 		LDR R9, =cacheL2
-		STRB R10, [R9, R8] @update the cache L1 with new value
+		STRB R10, [R9, R8] @update the cache L2 with new value
 		B next_LOOP
 		two_WSA:
 			@search in L1
@@ -187,6 +187,7 @@ FIFOL1:
 	PUSH {R9}
 	LDR R9, =cacheL1
 	STRB R10, [R9, R8]
+	BL swapL1
 	POP {R9}
 	B end_replacementL1
 LRUL1:
@@ -332,6 +333,7 @@ FIFOL2:
 	PUSH {R9}
 	LDR R9, =cacheL2
 	LDRB R10, [R9, R8]
+	BL swapL2
 	POP {R9}
 	B end_replacementL2
 LRUL2:
