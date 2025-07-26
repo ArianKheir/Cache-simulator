@@ -21,12 +21,15 @@ This project is a cache simulator written in ARMv7 assembly, designed to run on 
   - `mode`: 1 byte, 0 for DMC, 1 for 2WSA (in DMC-2WSA.s)
   - `countL1`, `countL2`: Arrays for usage/frequency counters (for LFU/MFU)
   - `rand_seed`, `rand_a`, `rand_c`: For random replacement policy
+  - `hitAndmissAndhitrateL1`, `hitAndmissAndhitrateL2`: Arrays to store final statistics [hits, misses, hitrate] for L1 and L2
 - **Text Section**:
   - `_start`: Entry point, main simulation loop
   - `replacementL1`, `replacementL2`: Handles cache replacement for L1/L2
   - `missL1`, `hitL1`, `missL2`, `hitL2`: Update hit/miss statistics
   - `mod_func`, `get_random`: Utility functions
   - `swapL1`, `swapL2`: Swap blocks for LRU/MRU in 2WSA
+  - `compute_stats`: Calculates final hit/miss statistics and hit rates for both cache levels
+  - `divide_func`: Performs integer division for hit rate calculations
 
 ## How It Works
 1. **Initialization**: Loads input array, cache sizes, policies, and mode.
@@ -36,6 +39,7 @@ This project is a cache simulator written in ARMv7 assembly, designed to run on 
    - On L2 miss, simulates memory access
    - Updates caches and statistics according to the selected replacement policy and mode
 3. **Statistics**: Results are stored in `hitmissL1` and `hitmissL2` arrays for analysis
+4. **Final Statistics**: The `compute_stats` function calculates final hit/miss counts and hit rates, storing them in `hitAndmissAndhitrateL1` and `hitAndmissAndhitrateL2` arrays
 
 ## Cache Modes
 
@@ -111,7 +115,7 @@ You can modify the following parameters in the `.data` section:
 2. Paste the contents of `DMC-2WSA.s` into the editor
 3. Modify the `.data` section as needed for your experiment
 4. Click **Assemble & Run**
-5. Use the memory viewer to inspect `hitmissL1`, `hitmissL2`, `cacheL1`, and `cacheL2` after execution
+5. Use the memory viewer to inspect `hitmissL1`, `hitmissL2`, `cacheL1`, `cacheL2`, `hitAndmissAndhitrateL1`, and `hitAndmissAndhitrateL2` after execution
 
 ### For Fully Associative:
 1. Go to [cpulator ARMv7 emulator](https://cpulator.01xz.net/?sys=arm)
@@ -131,6 +135,13 @@ With L1 and L2 both size 4:
 
 The simulator will process each access, update caches, and record hits/misses in `hitmissL1` and `hitmissL2`.
 
+## Statistics Output
+After simulation completion, the `compute_stats` function calculates and stores final statistics in:
+- `hitAndmissAndhitrateL1`: [hits, misses, hitrate] for L1 cache
+- `hitAndmissAndhitrateL2`: [hits, misses, hitrate] for L2 cache
+
+The hit rate is calculated as: `(hits / total_accesses) * 100` and stored as a percentage.
+
 ## Code Structure (Key Functions)
 
 ### DMC and 2WSA (`DMC-2WSA.s`)
@@ -140,6 +151,8 @@ The simulator will process each access, update caches, and record hits/misses in
 - **mod_func**: Computes modulo for cache indexing
 - **get_random**: Generates pseudo-random numbers for random replacement
 - **swapL1/swapL2**: Swaps blocks for LRU/MRU in 2WSA
+- **compute_stats**: Calculates final hit/miss statistics and hit rates for both cache levels
+- **divide_func**: Performs integer division for hit rate calculations
 
 ### Fully Associative (`fullyassociative.s`)
 - **_start**: Main loop with sequential search through all cache lines
