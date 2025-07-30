@@ -1,6 +1,6 @@
 .data
 .align 2
-inputarray: .byte 8, 5, 6, 6, 6, 6, 2, 7
+inputarray: .byte 8, 5, 6, 1, 6, 3, 2, 7
 .align 2
 hitmissL1: .byte  0, 0, 0, 0, 0, 0, 0, 0
 .align 2
@@ -32,8 +32,8 @@ _start:
 	LDR R0, =cacheL1
 	LDR R0, =cacheL2
 	LDR R0, =inputarray @R0 = inputarray
-	MOV R1, #1 @R1 = policy for L1 = 0 FIFO, 1 LRU, 2 MRU, 3 LFU, 4 MFU, 5 random *only in 2WSA
-	MOV R2, #1 @R2 = policy for L2 = 0 FIFO, 1 LRU, 2 MRU, 3 LFU, 4 MFU, 5 random *only in 2WSA
+	MOV R1, #2 @R1 = policy for L1 = 0 FIFO, 1 LRU, 2 MRU, 3 LFU, 4 MFU, 5 random *only in 2WSA
+	MOV R2, #2 @R2 = policy for L2 = 0 FIFO, 1 LRU, 2 MRU, 3 LFU, 4 MFU, 5 random *only in 2WSA
 	MOV R3, #8 @R3 = sizeof input addrs
 	MOV R4, #0 @R4 = i (for traversing the input array)
 	LDR R5, =mode
@@ -47,6 +47,7 @@ _start:
 		PUSH {R0, R1}
 		LDRB R0, [R0, R4] @find the place to search in cache
 		MOV R1, R6
+		LSR R1, R1, #1
 		BL mod_func
 		MOV R8, R0 @R8 = mod answer (the memory % size of cache = the block(=1byte) in cache L1)
 		POP {R0, R1}
@@ -67,6 +68,7 @@ _start:
 		PUSH {R0, R1}
 		LDRB R0, [R0, R4] @find the place to search in cache
 		MOV R1, R7
+		LSR R1, R1, #1
 		BL mod_func
 		MOV R8, R0 @R8 = mod answer (the memory % size of cache = the block(=1byte) in cache L2)
 		POP {R0, R1}
@@ -97,6 +99,7 @@ _start:
 			PUSH {R0, R1}
 			LDRB R0, [R0, R4] @find the place to search in cache
 			MOV R1, R7
+			LSR R1, R1, #1
 			BL mod_func
 			MOV R8, R0 @R8 = mod answer (the memory % size of cache = the block(=1byte) in cache L2)
 			POP {R0, R1}
@@ -176,6 +179,8 @@ replacementL1:
 		LDRB R5, [R9, R10]
 		ADD R5, R5, #1
 		STRB R5, [R9, R10]
+		CMP R1, #1
+		BLEQ swapL1
 		B end_replacementL1
 	check_policyL1:
 	  CMP R1, #0
@@ -317,11 +322,16 @@ replacementL2:
 		LDRB R9, [R9, R8]
 		CMP R9, #0xFF
 		BNE check_policyL2
+		LDR R9, =cacheL2
+		LSR R5, R7, #1
+		ADD R9, R9, R5
 		STRB R10, [R9, R8]
 		LDR R9, =countL2
 		LDRB R5, [R9, R10]
 		ADD R5, R5, #1
 		STRB R5, [R9, R10]
+		CMP R2, #1
+		BLEQ swapL2
 		B end_replacementL2
 	check_policyL2:
 	  CMP R2, #0
@@ -596,4 +606,5 @@ divide_func:
 		POP {R2, R3, LR}
 		BX LR
 	
+		
 	
