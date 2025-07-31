@@ -22,15 +22,16 @@ rand_a: .byte 13
 .align 2
 rand_c: .byte 17
 .align 2
-hitAndmissAndhitrateL1: .byte 0, 0, 0
+hitAndmissAndhitrateL1: .byte 0xFF, 0xFF, 0xFF
 .align 2
-hitAndmissAndhitrateL2: .byte 0, 0, 0
+hitAndmissAndhitrateL2: .byte 0xFF, 0xFF, 0xFF
 .align 2
 .text
 .global _start
 _start:
 	LDR R0, =cacheL1
 	LDR R0, =cacheL2
+	LDR R0, =hitAndmissAndhitrateL2
 	LDR R0, =inputarray @R0 = inputarray
 	MOV R1, #2 @R1 = policy for L1 = 0 FIFO, 1 LRU, 2 MRU, 3 LFU, 4 MFU, 5 random *only in 2WSA
 	MOV R2, #2 @R2 = policy for L2 = 0 FIFO, 1 LRU, 2 MRU, 3 LFU, 4 MFU, 5 random *only in 2WSA
@@ -542,7 +543,8 @@ swapL2:
 	POP {R0, R1, R9, R5, LR}
 	BX LR	
 compute_stats:
-    PUSH {R0-R8, LR}
+    PUSH {R0-R9, LR}
+	MOV R9, R3
     MOV R0, #0      @ R0 = index
     MOV R1, #0      @ R1 = L1 hits
     MOV R2, #0      @ R2 = L1 misses
@@ -551,7 +553,7 @@ compute_stats:
     LDR R5, =hitmissL1
     LDR R6, =hitmissL2	
 	loop_stats:
-		CMP R0, R3
+		CMP R0, R9
 		BGE done_stats
 
 		LDRB R7, [R5, R0]
@@ -590,7 +592,7 @@ compute_stats:
     BL divide_func		@R0 = hitrate
     STRB R0, [R7, #2]
 
-    POP {R0-R8, LR}
+    POP {R0-R9, LR}
     BX LR
 divide_func:
     PUSH {R2, R3, LR}
